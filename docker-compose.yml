@@ -1,0 +1,47 @@
+networks:
+  backend:
+    driver: bridge
+  frontend:
+
+services:
+  ieltsdb:
+    container_name: ielts-db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${IELTS_SQL_PW}
+    networks:
+      - backend
+    ports:
+      - ${IELTS_SQL_PORT}:1433
+
+  ieltsbe:
+    build:
+      context: .
+      dockerfile: demo-be/api/Dockerfile
+    ports:
+      - ${BE_PORT}:8080
+    networks:
+      - backend
+    image: zurachan/ielts-be:1.0.0
+    depends_on:
+      - ieltsdb
+    environment:
+      - DB_HOST=ieltsdb
+      - DB_NAME=ielts
+      - DB_SA_PASSWORD=${IELTS_SQL_PW}
+      - IP_SERVER=${IP_SERVER}
+      - FE_PORT=${FE_PORT}
+     
+  ieltsapp:
+    build:
+      context: ./demo-fe
+      dockerfile: ./Dockerfile
+    ports:
+      - ${FE_PORT}:80
+    networks:
+      - frontend
+    image: zurachan/ielts-fe:1.0.0
+    depends_on:
+      - ieltsbe
+     
