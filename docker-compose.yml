@@ -18,7 +18,7 @@ services:
   ieltsbe:
     build:
       context: .
-      dockerfile: demo-be/api/Dockerfile
+      dockerfile: ielts-web-api/ielts.api/Dockerfile
     ports:
       - ${BE_PORT}:8080
     networks:
@@ -27,6 +27,7 @@ services:
     depends_on:
       - ieltsdb
     environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - DB_HOST=ieltsdb
       - DB_NAME=ielts
       - DB_SA_PASSWORD=${IELTS_SQL_PW}
@@ -35,7 +36,7 @@ services:
      
   ieltsapp:
     build:
-      context: ./demo-fe
+      context: ./ielts-web-app
       dockerfile: ./Dockerfile
     ports:
       - ${FE_PORT}:80
