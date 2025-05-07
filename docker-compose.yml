@@ -1,20 +1,8 @@
 networks:
   backend:
-    driver: bridge
   frontend:
 
 services:
-  ieltsdb:
-    container_name: ielts-db
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=${IELTS_SQL_PW}
-    networks:
-      - backend
-    ports:
-      - ${IELTS_SQL_PORT}:1433
-
   ieltsbe:
     build:
       context: .
@@ -24,13 +12,11 @@ services:
     networks:
       - backend
     image: zurachan/ielts-be:1.0.0
-    depends_on:
-      - ieltsdb
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - DB_HOST=ieltsdb
-      - DB_NAME=ielts
-      - DB_SA_PASSWORD=${IELTS_SQL_PW}
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_SA_PASSWORD=${DB_SA_PASSWORD}
       - IP_SERVER=${IP_SERVER}
       - FE_PORT=${FE_PORT}
      
