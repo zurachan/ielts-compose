@@ -31,4 +31,3 @@ services:
     image: zurachan/ielts-fe:1.0.0
     depends_on:
       - ieltsbe
-     
